@@ -41,26 +41,23 @@ func main() {
         exit(0)
         return
     }
-    if *cliJSON {
-        if *cliSchedule {
-            schedule := beatsone.GetSchedule()
-            fmt.Println(schedule.JSONString())
-            exit(0)
-            return
-        }
-        np := beatsone.GetNowPlaying()
-        fmt.Println(np.JSONString())
-        exit(0)
-        return
-    }
+
     if *cliSchedule {
         schedule := beatsone.GetSchedule()
-        fmt.Println(schedule.String())
+        if *cliJSON {
+            fmt.Println(schedule.JSONString())
+        } else {
+            fmt.Println(schedule.String())
+        }
         exit(0)
         return
     }
     np := beatsone.GetNowPlaying()
-    fmt.Println(np.String())
+    if *cliJSON {
+        fmt.Println(np.JSONString())
+    } else {
+        fmt.Println(np.String())
+    }
     exit(0)
     return
 }
