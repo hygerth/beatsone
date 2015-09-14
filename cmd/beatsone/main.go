@@ -11,7 +11,7 @@ var (
     exit        = os.Exit
     usage       = "Usage: beatsone [OPTIONS]"
     options     = "Options:\n-h, -help \tPrint this help text and exit \n-v, -version \tPrint program version and exit\n" + json + schedule
-    version     = "2015.08.28"
+    version     = "2015.09.14"
     help        = fmt.Sprintf("%s\nVersion: %s\n%s", usage, version, options)
     json        = "-j, -json\tPrint the result in JSON format\n"
     schedule    = "-s, -schedule\tPrint the schedule\n"
