@@ -1,6 +1,7 @@
 package beatsone
 
 import (
+    "errors"
     "io/ioutil"
     "log"
     "net/http"
@@ -16,18 +17,21 @@ func trimSpaces(s string) string {
     return re.ReplaceAllString(s, " ")
 }
 
-func getPage(url string) ([]byte, bool) {
+func getPage(url string) ([]byte, error) {
     client := &http.Client{}
     req, err := http.NewRequest("GET", url, nil)
     checkerr(err)
     req.Header.Set("User-Agent", useragent)
     resp, err := client.Do(req)
-    if err != nil || resp.StatusCode != 200 {
-        return []byte{}, false
+    if err != nil {
+        return []byte{}, err
+    }
+    if resp.StatusCode != http.StatusOK {
+        return []byte{}, errors.New("beatsone: Unsuccessful request")
     }
     defer resp.Body.Close()
     b, _ := ioutil.ReadAll(resp.Body)
-    return b, true
+    return b, nil
 }
 
 func checkerr(err error) {

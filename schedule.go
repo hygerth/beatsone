@@ -7,6 +7,7 @@ import (
 )
 
 const scheduleURL = "http://fuse-music.herokuapp.com/api/programs"
+const layout = "2006-01-02 15:04"
 
 type program struct {
     Programs []show
@@ -34,17 +35,17 @@ type Entry struct {
 }
 
 // JSONString returns the entries in a JSON structure as a string
-func (e *Entries) JSONString() string {
+func (e Entries) JSONString() string {
     jsonobject, err := json.Marshal(e)
     checkerr(err)
     return string(jsonobject)
 }
 
 // String returns all the entries as a string separated by newlines
-func (e *Entries) String() string {
+func (e Entries) String() string {
     s := "Starts:\t\t\tEnds:\t\t\tTitle:\t\n"
     s += strings.Repeat("-", 80) + "\n"
-    for _, entry := range *e {
+    for _, entry := range e {
         s += entry.Start.Format(layout) + "\t"
         s += entry.End.Format(layout) + "\t"
         s += entry.Title + "\n"
@@ -52,11 +53,12 @@ func (e *Entries) String() string {
     return s
 }
 
-func getSchedule() Entries {
+// GetSchedule collects the schedule for Beats1
+func GetSchedule() (Entries, error) {
     var entries Entries
-    source, result := getPage(scheduleURL)
-    if !result {
-        return entries
+    source, err := getPage(scheduleURL)
+    if err != nil {
+        return entries, err
     }
     var shows program
     json.Unmarshal(source, &shows)
@@ -69,5 +71,5 @@ func getSchedule() Entries {
         entry := Entry{Image: show.Image, Start: start, End: end, Title: show.Title, URL: show.URL}
         entries = append(entries, entry)
     }
-    return entries
+    return entries, nil
 }

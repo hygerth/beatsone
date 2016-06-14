@@ -11,7 +11,7 @@ var (
     exit        = os.Exit
     usage       = "Usage: beatsone [OPTIONS]"
     options     = "Options:\n-h, -help \tPrint this help text and exit \n-v, -version \tPrint program version and exit\n" + json + schedule
-    version     = "2015.09.14"
+    version     = "2016.06.14"
     help        = fmt.Sprintf("%s\nVersion: %s\n%s", usage, version, options)
     json        = "-j, -json\tPrint the result in JSON format\n"
     schedule    = "-s, -schedule\tPrint the schedule\n"
@@ -41,22 +41,21 @@ func main() {
         exit(0)
         return
     }
-
+    var res beatsone.BeatsOne
+    var err error
     if *cliSchedule {
-        schedule := beatsone.GetSchedule()
-        if *cliJSON {
-            fmt.Println(schedule.JSONString())
-        } else {
-            fmt.Println(schedule.String())
-        }
-        exit(0)
-        return
-    }
-    np := beatsone.GetNowPlaying()
-    if *cliJSON {
-        fmt.Println(np.JSONString())
+        res, err = beatsone.GetSchedule()
     } else {
-        fmt.Println(np.String())
+        res, err = beatsone.GetNowPlaying()
+    }
+    if err != nil {
+        fmt.Println(err)
+        exit(1)
+    }
+    if *cliJSON {
+        fmt.Println(res.JSONString())
+    } else {
+        fmt.Println(res.String())
     }
     exit(0)
     return
